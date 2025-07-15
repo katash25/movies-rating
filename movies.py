@@ -1,32 +1,3 @@
-from functools import reduce
-
-RED = "\033[31m"
-GREEN = "\033[32m"
-YELLOW = "\033[33m"
-RESET = "\033[0m"
-GENRES = [
-    "action",
-    "adventure",
-    "animation",
-    "biography",
-    "comedy",
-    "crime",
-    "documentary",
-    "drama",
-    "family",
-    "fantasy",
-    "history",
-    "horror",
-    "music",
-    "musical",
-    "mystery",
-    "romance",
-    "sci-fi",
-    "sport",
-    "thriller",
-    "war",
-    "western"
-]
 MOVIES = [
     "Inception",
     "The Matrix",
@@ -34,7 +5,67 @@ MOVIES = [
     "Gladiator",
     "The Godfather"
 ]
+class Movie:
+    def __init__(self, movie_name:str, movie_genre:str=""):
+        self.movie_name = movie_name
+        self.movie_genre = movie_genre
 
+    def __str__(self):
+        return f"{self.movie_name} ({self.movie_genre})"
+
+
+class MovieGallery:
+    GENRES = [
+        "action",
+        "adventure",
+        "animation",
+        "biography",
+        "comedy",
+        "crime",
+        "documentary",
+        "drama",
+        "family",
+        "fantasy",
+        "history",
+        "horror",
+        "music",
+        "musical",
+        "mystery",
+        "romance",
+        "sci-fi",
+        "sport",
+        "thriller",
+        "war",
+        "western"
+    ]
+    def __init__(self, movie_dict:dict[str, Movie]=None):
+        self.movie_dict = movie_dict
+        self.movie_genres = MovieGallery.GENRES
+
+    def add_movie(self, movie:Movie):
+        if not isinstance(movie, Movie):
+            print(f"Invalid type: {type(movie)}")
+            return False
+        if movie.movie_name not in self.movie_dict:
+            self.movie_dict[movie.movie_name] = movie
+            return True
+        print(f"{movie.movie_name} already exists")
+        return False
+
+    def update_genre(self, movie:Movie, new_genre:str):
+        if not isinstance(movie, Movie):
+            print(f"Invalid type: {type(movie)}")
+            return False
+        if movie.movie_name not in self.movie_dict.keys():
+            self.movie_dict[movie.movie_name] = Movie(movie.movie_name, new_genre)
+            return True
+        print(f"{movie.movie_name} not exists in gallery")
+        return False
+
+    def __str__(self):
+        return "The movies in this gallery:\n"+"\n".join(str(movie) for movie in self.movie_dict.values())
+
+"""add to a list all the movies input from user, stops when user input 'exit' """
 def set_list_movies():
     movies_lst=[]
     while True:
@@ -47,99 +78,31 @@ def set_list_movies():
         movies_lst.append(temp_movie)
     return movies_lst
 
-
-def add_rating(movies_lst):
-    movies_with_rating={}
-    for m in movies_lst:
-        while True:
-            temp_rating = input("enter rating for the movie " + m + ": ")
-            try:
-                temp_rating=float(temp_rating)
-                break
-            except ValueError:
-                print('rating must be an number!')
-
-        movies_with_rating[m]=temp_rating
-    return movies_with_rating
-
-"""function that print out the best movie, worst and the avg rating in a movie dict"""
-def get_basic_stats(movies_dict: dict):
+def init_gallery(movie_lst:list):
     try:
-        movies_dict=dict(sorted(movies_dict.items(), key=lambda x:x[1], reverse=True))
-        rating_sum=0
-        for rating in movies_dict.values():
-            if isinstance(rating, list):
-                rating_sum+=float(rating[0])
-            else:
-                rating_sum+=float(rating)
+        movie_dict = {}
+        for movie in movie_lst:
+            genre = input(f"insert genre for '{movie}': ")
+            while genre not in MovieGallery.GENRES:
+                print(f"Invalid genre: {genre}")
+                genre = input(f"insert genre for '{movie}': ")
+            new_movie = Movie(movie, movie_genre=genre)
+            movie_dict[new_movie.movie_name] = new_movie
+        return MovieGallery(movie_dict)
 
-        avg = rating_sum / len(movies_dict)
-        best_movie=list(movies_dict.keys())[0]
-        worst_movie=list(movies_dict.keys())[-1]
-        print(f"The best movie is: {GREEN}{best_movie}{RESET}")
-        print(f"The worst movie is:{RED}{worst_movie}{RESET}")
-        print(f"The average rating is:{YELLOW}{avg}{RESET}")
-    except TypeError:
-        print("not all ratings are numbers!")
-    except AttributeError:
-        print("your movie list is not a dict object!")
+    except ValueError as ve:
+        print(f"Invalid input: {ve}")
 
-"""function that set a genre to all movies"""
-def add_genre(movies_dict:dict, movie_name:str):
-    try:
-        for movie in movies_dict:
-            genre = input(f'enter the genre of the movie {movie_name}: ')
-            while genre.lower() not in GENRES:
-                print("Your input is not a valid genre")
-                genre = input(f'enter the genre of the movie {movie_name}: ')
-            movies_dict[movie]=[movies_dict[movie], genre]
-        return movies_dict
-    except AttributeError:
-        print('your movies input is not in a dict format!')
+    except TypeError as te:
+        print(f"Type error: {te}")
 
+    except EOFError:
+        print("Input cancelled (EOF).")
 
-def get_best_movie_by_genre(movies_dict:dict, genre:str):
-    if genre.lower() not in GENRES:
-        print("your input is not a known genre")
-        return None
-    if not isinstance(movies_dict, dict):
-        print("your input is not a dict!")
-        return  None
-    try:
-        best_rating=-1
-        best_movie=""
-        for movie in movies_dict:
-            if not isinstance(movies_dict[movie], list):
-                continue
-            if movies_dict[movie][1]==genre:
-                if float(movies_dict[movie][0])>best_rating:
-                    best_rating=float(movies_dict[movie][0])
-                    best_movie=movie
-        return best_movie
-    except ValueError:
-        print('one of your movies rating is not numerical, '
-              'please make sure each movie in your dict looks like: '
-              '{<movie name>:[<rating>, <genre>]}')
+    except KeyboardInterrupt:
+        print("\nInput interrupted by user.")
 
-
-def get_recommended_movies_by_genres(movies_dict:dict, fav_genres:list):
-    movies_recommendations=[]
-    for genre in fav_genres:
-        if genre.lower() not in GENRES:
-            print(f"The genre: {genre} is not a known genre!")
-            continue
-        best_movie=get_best_movie_by_genre(movies_dict, genre)
-        if best_movie!="":
-            movies_recommendations.append(f"the best {genre} movie is {best_movie}")
-    return movies_recommendations
-
-
-def rate_movies(movies_dict):
-    for movie in movies_dict:
-        rating=input(f"please enter your rating for the movie {movie}: ")
-
-if __name__ == "__main__":
-    pass
+gallery=init_gallery(MOVIES     )
 
 
 
