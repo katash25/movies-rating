@@ -2,13 +2,15 @@ import movies
 
 USERS={}
 
-
+"""class that stores for each user his username and a dict in the form {<Movie object> : <User's rating>}"""
 class User:
     MOVIE_GALLERY = movies.gallery
     def __init__(self, user_name):
         self.user_name=user_name
         self.movies_dict=self.build_user_ratings()
 
+    """static method that go through the basic dict, and asks the user for his first ratings,
+    runs when new user is init"""
     @staticmethod
     def build_user_ratings():
         movies_dict={}
@@ -29,6 +31,7 @@ class User:
 
         return movies_dict
 
+    """str function that returns user str in the form : <movie name> --> <user's rating>"""
     def __str__(self):
         user_str=""
         for movie in list(self.movies_dict.items()):
@@ -36,12 +39,11 @@ class User:
         return user_str
 
 if __name__=="__main__":
-    yair= User('yair')
-    print(yair)
+    pass
 
 
 
-
+    
 
 
 

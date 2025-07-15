@@ -5,6 +5,7 @@ MOVIES = [
     "Gladiator",
     "The Godfather"
 ]
+"""class that saves name and genre of a movie"""
 class Movie:
     def __init__(self, movie_name:str, movie_genre:str=""):
         self.movie_name = movie_name
@@ -13,7 +14,7 @@ class Movie:
     def __str__(self):
         return f"{self.movie_name} ({self.movie_genre})"
 
-
+"""class that stores dict of movies in the form {<movie name> : <Movie object>}"""
 class MovieGallery:
     GENRES = [
         "action",
@@ -42,6 +43,7 @@ class MovieGallery:
         self.movie_dict = movie_dict
         self.movie_genres = MovieGallery.GENRES
 
+    """function that add movie to a movie gallery"""
     def add_movie(self, movie:Movie):
         if not isinstance(movie, Movie):
             print(f"Invalid type: {type(movie)}")
@@ -52,6 +54,7 @@ class MovieGallery:
         print(f"{movie.movie_name} already exists")
         return False
 
+    """function that allow user to change genre of movie in his gallery"""
     def update_genre(self, movie:Movie, new_genre:str):
         if not isinstance(movie, Movie):
             print(f"Invalid type: {type(movie)}")
@@ -64,6 +67,7 @@ class MovieGallery:
 
     def __str__(self):
         return "The movies in this gallery:\n"+"\n".join(str(movie) for movie in self.movie_dict.values())
+
 
 """add to a list all the movies input from user, stops when user input 'exit' """
 def set_list_movies():
@@ -78,6 +82,7 @@ def set_list_movies():
         movies_lst.append(temp_movie)
     return movies_lst
 
+"""function that init the basic movie gallery, gets list of movies, return an MovieGallery object"""
 def init_gallery(movie_lst:list):
     try:
         movie_dict = {}
@@ -102,7 +107,7 @@ def init_gallery(movie_lst:list):
     except KeyboardInterrupt:
         print("\nInput interrupted by user.")
 
-gallery=init_gallery(MOVIES     )
+gallery=init_gallery(MOVIES)
 
 
 
