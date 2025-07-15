@@ -27,6 +27,13 @@ GENRES = [
     "war",
     "western"
 ]
+MOVIES = [
+    "Inception",
+    "The Matrix",
+    "Forrest Gump",
+    "Gladiator",
+    "The Godfather"
+]
 
 def set_list_movies():
     movies_lst=[]
@@ -55,7 +62,7 @@ def add_rating(movies_lst):
         movies_with_rating[m]=temp_rating
     return movies_with_rating
 
-
+"""function that print out the best movie, worst and the avg rating in a movie dict"""
 def get_basic_stats(movies_dict: dict):
     try:
         movies_dict=dict(sorted(movies_dict.items(), key=lambda x:x[1], reverse=True))
@@ -77,19 +84,15 @@ def get_basic_stats(movies_dict: dict):
     except AttributeError:
         print("your movie list is not a dict object!")
 
-
+"""function that set a genre to all movies"""
 def add_genre(movies_dict:dict, movie_name:str):
     try:
-        if movie_name in movies_dict.keys():
-            genre=input(f'enter the genre of the movie {movie_name}: ')
-
+        for movie in movies_dict:
+            genre = input(f'enter the genre of the movie {movie_name}: ')
             while genre.lower() not in GENRES:
                 print("Your input is not a valid genre")
                 genre = input(f'enter the genre of the movie {movie_name}: ')
-
-            movies_dict[movie_name]=[movies_dict[movie_name], genre]
-        else:
-            print('the movie is not in your dict!')
+            movies_dict[movie]=[movies_dict[movie], genre]
         return movies_dict
     except AttributeError:
         print('your movies input is not in a dict format!')
@@ -131,24 +134,13 @@ def get_recommended_movies_by_genres(movies_dict:dict, fav_genres:list):
     return movies_recommendations
 
 
-if __name__ == "__main__":
-    movies = {
-        "Gladiator": ["8.5", "action"],
-        "Fight Club": ["8.8", "drama"],
-        "Pulp Fiction": ["8.9", "crime"],
-        "The Matrix": ["8.7", "sci-fi"],
-        "The Prestige": ["8.5", "drama"],
-        "Mad Max: Fury Road": ["8.1", "action"],
-        "Joker": ["8.4", "crime"],
-        "A Beautiful Mind": ["8.2", "biography"],
-        "The Imitation Game": ["8.0", "biography"],
-        "Blade Runner 2049": ["8.0", "sci-fi"]
-    }
+def rate_movies(movies_dict):
+    for movie in movies_dict:
+        rating=input(f"please enter your rating for the movie {movie}: ")
 
-    get_basic_stats(movies)
-    print("----------------------")
-    for i in get_recommended_movies_by_genres(movies, ['crime', 'drama']):
-        print(i)
+if __name__ == "__main__":
+    pass
+
 
 
 
